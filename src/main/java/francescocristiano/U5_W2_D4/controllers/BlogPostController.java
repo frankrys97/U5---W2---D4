@@ -2,8 +2,8 @@ package francescocristiano.U5_W2_D4.controllers;
 
 
 import francescocristiano.U5_W2_D4.entities.BlogPost;
-import francescocristiano.U5_W2_D4.entities.NewBlogPostDTO;
 import francescocristiano.U5_W2_D4.exeptions.BadRequestException;
+import francescocristiano.U5_W2_D4.payloads.NewBlogPostDTO;
 import francescocristiano.U5_W2_D4.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

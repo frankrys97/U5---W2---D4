@@ -1,8 +1,8 @@
 package francescocristiano.U5_W2_D4.controllers;
 
 import francescocristiano.U5_W2_D4.entities.Author;
-import francescocristiano.U5_W2_D4.entities.NewAuthorDTO;
 import francescocristiano.U5_W2_D4.exeptions.BadRequestException;
+import francescocristiano.U5_W2_D4.payloads.NewAuthorDTO;
 import francescocristiano.U5_W2_D4.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

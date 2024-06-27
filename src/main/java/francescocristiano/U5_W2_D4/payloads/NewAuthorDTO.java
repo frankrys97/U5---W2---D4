@@ -1,11 +1,9 @@
-package francescocristiano.U5_W2_D4.entities;
+package francescocristiano.U5_W2_D4.payloads;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import java.util.Date;
 
 public record NewAuthorDTO(
         @NotEmpty(message = "name cannot be empty")
@@ -17,6 +15,7 @@ public record NewAuthorDTO(
         @NotEmpty(message = "email cannot be empty")
         @Email
         String email,
-        @NotNull(message = "birthDate cannot be null")
-        Date birthDate) {
+        @NotEmpty(message = "birthDate cannot be empty")
+        @Pattern(regexp = "^\\d{2}-\\d{2}-\\d{4}$", message = "birthDate must be in the format dd-mm-yyyy")
+        String birthDate) {
 }
