@@ -65,12 +65,11 @@ public class AuthorService {
         this.authorRepository.deleteById(id);
     }
 
-    public String uploadCover(MultipartFile file, UUID id) throws IOException {
+    public Author uploadCover(MultipartFile file, UUID id) throws IOException {
         String cloudinaryUrl = cloudinaryService.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url").toString();
         Author found = this.findAuthorById(id);
         found.setAvatar(cloudinaryUrl);
-        this.authorRepository.save(found);
-        return cloudinaryUrl;
+        return this.authorRepository.save(found);
     }
 }
 

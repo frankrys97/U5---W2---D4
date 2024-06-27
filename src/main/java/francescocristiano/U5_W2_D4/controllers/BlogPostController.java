@@ -62,7 +62,7 @@ public class BlogPostController {
     }
 
     @PostMapping("/{id}/cover")
-    public String uploadCover(@RequestParam("cover") MultipartFile file, @PathVariable UUID id) throws IOException {
+    public BlogPost uploadCover(@RequestParam("cover") MultipartFile file, @PathVariable UUID id) throws IOException {
         return blogPostService.uploadCover(file, id);
     }
 }

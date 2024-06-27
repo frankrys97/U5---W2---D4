@@ -68,12 +68,11 @@ public class BlogPostService {
         this.blogPostRepository.deleteById(id);
     }
 
-    public String uploadCover(MultipartFile file, UUID id) throws IOException {
+    public BlogPost uploadCover(MultipartFile file, UUID id) throws IOException {
         String cloudinaryUrl = cloudinaryService.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url").toString();
         BlogPost found = this.findBlogPostById(id);
         found.setCover(cloudinaryUrl);
-        this.blogPostRepository.save(found);
-        return cloudinaryUrl;
+        return this.blogPostRepository.save(found);
     }
 
 

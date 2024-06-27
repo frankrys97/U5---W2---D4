@@ -56,7 +56,7 @@ public class AuthorController {
     }
 
     @PostMapping("/{id}/avatar")
-    public String uploadCover(@RequestParam("avatar") MultipartFile file, @PathVariable UUID id) throws IOException {
+    public Author uploadCover(@RequestParam("avatar") MultipartFile file, @PathVariable UUID id) throws IOException {
         return authorService.uploadCover(file, id);
     }
 }
