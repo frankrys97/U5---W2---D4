@@ -2,7 +2,7 @@ package francescocristiano.U5_W2_D4.services;
 
 
 import francescocristiano.U5_W2_D4.entities.BlogPost;
-import francescocristiano.U5_W2_D4.entities.BlogPostPayload;
+import francescocristiano.U5_W2_D4.entities.NewBlogPostDTO;
 import francescocristiano.U5_W2_D4.exeptions.NotFoundException;
 import francescocristiano.U5_W2_D4.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,8 @@ public class BlogPostService {
     private AuthorService authorService;
 
 
-    public BlogPost saveBlogPost(BlogPostPayload blogPostPayload) {
-        BlogPost newBlogPost = new BlogPost(blogPostPayload.getCategory(), blogPostPayload.getTitle(), blogPostPayload.getBody(), blogPostPayload.getReadingTime(), authorService.findAuthorById(blogPostPayload.getAuthorId()));
+    public BlogPost saveBlogPost(NewBlogPostDTO blogPostPayload) {
+        BlogPost newBlogPost = new BlogPost(blogPostPayload.category().toUpperCase(), blogPostPayload.title(), blogPostPayload.body(), blogPostPayload.readingTime(), authorService.findAuthorById(blogPostPayload.authorId()));
         blogPostRepository.save(newBlogPost);
         return newBlogPost;
     }

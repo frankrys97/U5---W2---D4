@@ -1,6 +1,7 @@
 package francescocristiano.U5_W2_D4.services;
 
 import francescocristiano.U5_W2_D4.entities.Author;
+import francescocristiano.U5_W2_D4.entities.NewAuthorDTO;
 import francescocristiano.U5_W2_D4.exeptions.NotFoundException;
 import francescocristiano.U5_W2_D4.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,13 @@ public class AuthorService {
     private AuthorRepository authorRepository;
 
 
-    public Author saveAuthor(Author author) {
-        return this.authorRepository.save(author);
+    public Author saveAuthor(NewAuthorDTO authorBody) {
+
+        this.authorRepository.findByEmail(authorBody.email()).ifPresent(author -> {
+            throw new IllegalArgumentException("Email already in use");
+        });
+        Author newAuthor = new Author(authorBody.name(), authorBody.surname(), authorBody.email(), authorBody.birthDate());
+        return this.authorRepository.save(newAuthor);
     }
 
     public List<Author> getAllAuthors() {

@@ -1,13 +1,19 @@
 package francescocristiano.U5_W2_D4.controllers;
 
 import francescocristiano.U5_W2_D4.entities.Author;
+import francescocristiano.U5_W2_D4.entities.NewAuthorDTO;
+import francescocristiano.U5_W2_D4.exeptions.BadRequestException;
 import francescocristiano.U5_W2_D4.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/authors")
@@ -23,8 +29,12 @@ public class AuthorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private Author saveAuthor(@RequestBody Author author) {
-        return authorService.saveAuthor(author);
+    private Author saveAuthor(@RequestBody @Validated NewAuthorDTO authorBody, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            throw new BadRequestException(validationResult.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(", ")));
+        }
+        return authorService.saveAuthor(authorBody);
     }
 
     @GetMapping("/{id}")
