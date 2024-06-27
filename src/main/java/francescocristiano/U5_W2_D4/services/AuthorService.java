@@ -1,12 +1,16 @@
 package francescocristiano.U5_W2_D4.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import francescocristiano.U5_W2_D4.entities.Author;
 import francescocristiano.U5_W2_D4.entities.NewAuthorDTO;
 import francescocristiano.U5_W2_D4.exeptions.NotFoundException;
 import francescocristiano.U5_W2_D4.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +19,9 @@ public class AuthorService {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private Cloudinary cloudinaryService;
 
 
     public Author saveAuthor(NewAuthorDTO authorBody) {
@@ -48,31 +55,14 @@ public class AuthorService {
         this.authorRepository.deleteById(id);
     }
 
-
-}
-
-
-
-  /*  public List<Author> getAllAuthors() {
-        return authors;
-    }
-
-    public Author findAuthorById(int id) {
-        return authors.stream().filter(author -> author.getId() == id).findFirst().orElseThrow(() -> new NotFoundExpetion(id));
-    }
-
-    public Author findAuthorByIdAndUpdate(int id, Author authorUpdated) {
+    public String uploadCover(MultipartFile file, UUID id) throws IOException {
+        String cloudinaryUrl = cloudinaryService.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url").toString();
         Author found = this.findAuthorById(id);
-        found.setName(authorUpdated.getName());
-        found.setSurname(authorUpdated.getSurname());
-        found.setEmail(authorUpdated.getEmail());
-        found.setBirthDate(authorUpdated.getBirthDate());
-        found.setAvatar(authorUpdated.getAvatar());
-        return found;
-    }
-
-    public void deleteAuthorById(int id) {
-        authors.removeIf(author -> author.getId() == id);
+        found.setAvatar(cloudinaryUrl);
+        this.authorRepository.save(found);
+        return cloudinaryUrl;
     }
 }
-*/
+
+
+

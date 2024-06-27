@@ -1,6 +1,8 @@
 package francescocristiano.U5_W2_D4.services;
 
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import francescocristiano.U5_W2_D4.entities.BlogPost;
 import francescocristiano.U5_W2_D4.entities.NewBlogPostDTO;
 import francescocristiano.U5_W2_D4.exeptions.NotFoundException;
@@ -11,7 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -22,6 +26,9 @@ public class BlogPostService {
 
     @Autowired
     private AuthorService authorService;
+
+    @Autowired
+    private Cloudinary cloudinaryService;
 
 
     public BlogPost saveBlogPost(NewBlogPostDTO blogPostPayload) {
@@ -61,30 +68,13 @@ public class BlogPostService {
         this.blogPostRepository.deleteById(id);
     }
 
-  /*  public BlogPost findBlogPostById(int id) {
-        return blogPosts.stream().filter(blogPost -> blogPost.getId() == id).findFirst().orElseThrow(() -> new NotFoundExpetion(id));
-    }*/
-
-/*    public BlogPost findBlogPostByIdAndUpdate(int id, BlogPost blogPostUpdated) {
-        BlogPost found = null;
-        found = this.findBlogPostById(id);
-        found.setTitle(blogPostUpdated.getTitle());
-        found.setBody(blogPostUpdated.getBody());
-        found.setReadingTime(blogPostUpdated.getReadingTime());
-        found.setCategory(blogPostUpdated.getCategory());
-        found.setCover(blogPostUpdated.getCover());
-        return found;
-    }*/
-
- /*   public void deleteBlogPostById(int id) {
-        Iterator<BlogPost> iterator = blogPosts.iterator();
-        while (iterator.hasNext()) {
-            BlogPost currentBlogPost = iterator.next();
-            if (currentBlogPost.getId() == id) {
-                iterator.remove();
-            }
-        }
-    }*/
+    public String uploadCover(MultipartFile file, UUID id) throws IOException {
+        String cloudinaryUrl = cloudinaryService.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url").toString();
+        BlogPost found = this.findBlogPostById(id);
+        found.setCover(cloudinaryUrl);
+        this.blogPostRepository.save(found);
+        return cloudinaryUrl;
+    }
 
 
 }
