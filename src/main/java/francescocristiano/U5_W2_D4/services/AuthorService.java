@@ -6,6 +6,7 @@ import francescocristiano.U5_W2_D4.entities.Author;
 import francescocristiano.U5_W2_D4.exeptions.NotFoundException;
 import francescocristiano.U5_W2_D4.payloads.NewAuthorDTO;
 import francescocristiano.U5_W2_D4.repositories.AuthorRepository;
+import kong.unirest.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,9 @@ public class AuthorService {
     @Autowired
     private Cloudinary cloudinaryService;
 
+    @Autowired
+    private MailgunService mailgunService;
+
 
     public Author saveAuthor(NewAuthorDTO authorBody) {
 
@@ -40,7 +44,16 @@ public class AuthorService {
             throw new IllegalArgumentException("Birth date must be in the format dd-mm-yyyy");
         }
         Author newAuthor = new Author(authorBody.name(), authorBody.surname(), authorBody.email(), newAuthorBirthDate);
-        return this.authorRepository.save(newAuthor);
+        Author savedAuthor = this.authorRepository.save(newAuthor);
+
+        try {
+            mailgunService.sendSimpleMessage(newAuthor.getEmail(), "Welcome to WebServer with Payload and Image", "Dear " + newAuthor.getName() + newAuthor.getSurname() + ", welcome to WebServer with Payload and Image");
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        return savedAuthor;
     }
 
     public List<Author> getAllAuthors() {
